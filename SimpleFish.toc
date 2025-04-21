@@ -1,0 +1,7 @@
+## Interface: 11200
+## Title: SimpleFish
+## Notes: Aplica automáticamente el mejor lure disponible a tu caña de pescar. Equipa una si no la tenés equipada.
+## Author: GitForWoW
+## Version: 1.0
+
+SimpleFish.lua
