@@ -68,13 +68,15 @@ end
 -- Aplica el mejor lure a la caña equipada
 local function ApplyLure()
     if not IsFishingRodEquipped() then
-        EquipFishingRod()
-        return
+        if not EquipFishingRod() then
+            DEFAULT_CHAT_FRAME:AddMessage("|cffff5555[SimpleFish]|r No tienes una caña de pescar en tus bolsas.")
+            return
+        end
     end
 
     local lure = GetBestLure()
     if not lure then
-        DEFAULT_CHAT_FRAME:AddMessage("|cffff5555[SimpleFish]|r No tenés ningún lure disponible.")
+        DEFAULT_CHAT_FRAME:AddMessage("|cffff5555[SimpleFish]|r No tienes ningun lure disponible.")
         return
     end
 
@@ -96,27 +98,5 @@ SlashCmdList["SIMPLEFISH"] = function()
     ApplyLure()
 end
 
--- Crear botón en pantalla
-local button = CreateFrame("Button", "SimpleFishButton", UIParent, "SecureActionButtonTemplate")
-button:SetWidth(36)
-button:SetHeight(36)
-button:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-
-button:SetNormalTexture("Interface\\Icons\\INV_Misc_Fish_01") -- ícono de anzuelo
-button:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square")
-
-button:SetScript("OnClick", function()
-    ApplyLure()
-end)
-
--- Tooltip
-button:SetScript("OnEnter", function()
-    GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
-    GameTooltip:SetText("SimpleFish", 1, 1, 1)
-    GameTooltip:AddLine("Clic para aplicar el mejor lure a tu caña", 0.8, 0.8, 0.8)
-    GameTooltip:Show()
-end)
-
-button:SetScript("OnLeave", function()
-    GameTooltip:Hide()
-end)
+-- Mensaje de carga
+DEFAULT_CHAT_FRAME:AddMessage("|cff55ff55[SimpleFish]|r Addon cargado. Usa /simplefish o /sfish para aplicar lures.")
