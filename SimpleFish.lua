@@ -24,7 +24,7 @@ local function GetItemIDFromLink(link)
     return tonumber(itemID)
 end
 
--- Verifica si tenés una caña equipada
+-- Verifica si tienes una caña equipada
 local function IsFishingRodEquipped()
     local link = GetInventoryItemLink("player", GetInventorySlotInfo("MainHandSlot"))
     local itemID = GetItemIDFromLink(link)
@@ -67,28 +67,35 @@ end
 
 -- Aplica el mejor lure a la caña equipada
 local function ApplyLure()
-    if not IsFishingRodEquipped() then
-        if not EquipFishingRod() then
-            DEFAULT_CHAT_FRAME:AddMessage("|cffff5555[SimpleFish]|r No tienes una caña de pescar en tus bolsas.")
-            return
-        end
-    end
-
+    -- Primero verifica si tenemos un lure disponible
     local lure = GetBestLure()
     if not lure then
         DEFAULT_CHAT_FRAME:AddMessage("|cffff5555[SimpleFish]|r No tienes ningun lure disponible.")
         return
     end
 
+    -- Luego verifica la caña
+    local hadRodEquipped = IsFishingRodEquipped()
+    if not hadRodEquipped then
+        if not EquipFishingRod() then
+            DEFAULT_CHAT_FRAME:AddMessage("|cffff5555[SimpleFish]|r No tienes una caña de pescar en tus bolsas.")
+            return
+        end
+    end
+
+    -- Solo mostrar el mensaje si teniamos caña equipada desde el principio
+    -- o si logramos equipar una y tenemos lure
     local lureLink = GetContainerItemLink(lure.bag, lure.slot)
     local rodLink = GetInventoryItemLink("player", GetInventorySlotInfo("MainHandSlot"))
 
     UseContainerItem(lure.bag, lure.slot)
     PickupInventoryItem(GetInventorySlotInfo("MainHandSlot")) -- Aplica el lure
 
-    DEFAULT_CHAT_FRAME:AddMessage(
-        string.format("|cff55ff55[SimpleFish]|r Aplicando Lure: %s -> %s", lureLink or "¿?", rodLink or "¿?")
-    )
+    if hadRodEquipped then
+        DEFAULT_CHAT_FRAME:AddMessage(
+            string.format("|cff55ff55[SimpleFish]|r Aplicando Lure: %s -> %s", lureLink or "¿?", rodLink or "¿?")
+        )
+    end
 end
 
 -- Slash command
